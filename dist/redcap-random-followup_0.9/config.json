@@ -1,0 +1,90 @@
+{
+  "version": "0.9",
+  "name": "Random Follow-up",
+  "namespace": "Gforge\\RandomFollowup",
+  "description": "Creates one or more random follow-up dates within a set interval, enforcing a minimum gap between them.",
+  "framework-version": 12,
+  "authors": [
+    {
+      "name": "Max Gordon",
+      "email": "max@gforge.se"
+    }
+  ],
+  "permissions": ["redcap_save_record"],
+  "project-settings": [
+    {
+      "key": "enable_module",
+      "name": "Enable Random Follow-up",
+      "type": "checkbox",
+      "description": "Enable random follow-up date generation for this project"
+    },
+    {
+      "key": "start_date_field",
+      "name": "Start Date Field",
+      "type": "field-list",
+      "required": true,
+      "description": "Field that contains the start date (e.g., enrolment date)."
+    },
+    {
+      "key": "event_date_field",
+      "name": "Event Date Field (Optional)",
+      "type": "field-list",
+      "required": false,
+      "description": "If configured, this field becomes mandatory and will be used as the base date."
+    },
+    {
+      "key": "min_days",
+      "name": "Minimum Days",
+      "type": "number",
+      "required": true,
+      "default": 60,
+      "description": "Minimum number of days after base date."
+    },
+    {
+      "key": "max_days",
+      "name": "Maximum Days",
+      "type": "number",
+      "required": true,
+      "default": 300,
+      "description": "Maximum number of days after base date."
+    },
+    {
+      "key": "min_gap_days",
+      "name": "Minimum gap between random follow-ups (days)",
+      "type": "number",
+      "required": true,
+      "default": 30,
+      "description": "Ensures random follow-up dates are at least this many days apart (e.g., 30 ~ 1 month)."
+    },
+
+    {
+      "key": "random_followups",
+      "name": "Random follow-up slots",
+      "type": "sub_settings",
+      "repeatable": true,
+      "description": "Define one or more follow-up date fields to populate. Each slot becomes one random follow-up.",
+      "sub_settings": [
+        {
+          "key": "enabled",
+          "name": "Enabled",
+          "type": "checkbox",
+          "description": "Enable this follow-up slot."
+        },
+        {
+          "key": "followup_date_field",
+          "name": "Follow-up date field",
+          "type": "field-list",
+          "required": true,
+          "description": "Date field to store the random follow-up date for this slot."
+        },
+        {
+          "key": "label",
+          "name": "Label (optional)",
+          "type": "text",
+          "required": false,
+          "description": "Internal label for this slot (e.g., 'Random FU #1')."
+        }
+      ]
+    }
+  ]
+}
