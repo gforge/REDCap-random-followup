@@ -58,6 +58,19 @@ When a participant is enrolled on `2026-01-01`, the module will automatically ge
 
 - REDCap version with External Module Framework v12 or higher
 
+## Limitations
+
+- This module currently does not support repeating instruments or repeating events
+- Follow-up dates can only be calculated for non-repeating fields
+
+## Future Enhancements
+
+Potential future features:
+- Support for repeating instruments/events
+- Multiple follow-up date calculations
+- Business day calculations (excluding weekends/holidays)
+- Custom random distribution patterns
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

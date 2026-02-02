@@ -8,6 +8,9 @@ use ExternalModules\AbstractExternalModule;
  * Random Follow-up External Module
  * 
  * Creates a random follow-up date within a set interval
+ * 
+ * Note: This module currently does not support repeating instruments/events.
+ * The repeat_instance parameter is included in the hook signature but not used.
  */
 class RandomFollowup extends AbstractExternalModule
 {
@@ -113,10 +116,13 @@ class RandomFollowup extends AbstractExternalModule
     /**
      * Helper method to get field value
      * 
+     * Note: This method does not support repeating instruments/events.
+     * It will only retrieve data from the first instance.
+     * 
      * @param string $record The record ID
      * @param string $field The field name
      * @param int $event_id The event ID
-     * @param int $instance The repeat instance (currently not used)
+     * @param int $instance The repeat instance (not currently used - repeating instruments not supported)
      * @return string The field value
      */
     private function getFieldValue($record, $field, $event_id, $instance = 1)
