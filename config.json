@@ -36,14 +36,14 @@
     {
       "key": "min_days",
       "name": "Minimum Days",
-      "type": "text",
+      "type": "number",
       "required": false,
       "description": "Minimum number of days after trigger date"
     },
     {
       "key": "max_days",
       "name": "Maximum Days",
-      "type": "text",
+      "type": "number",
       "required": false,
       "description": "Maximum number of days after trigger date"
     }

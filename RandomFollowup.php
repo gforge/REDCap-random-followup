@@ -66,20 +66,48 @@ class RandomFollowup extends AbstractExternalModule
         }
 
         // Generate random follow-up date
-        $random_days = rand((int)$min_days, (int)$max_days);
-        $trigger_date = new \DateTime($trigger_value);
-        $followup_date = $trigger_date->modify("+{$random_days} days");
+        try {
+            $random_days = rand((int)$min_days, (int)$max_days);
+            $trigger_date = new \DateTime($trigger_value);
+            $followup_date = $trigger_date->modify("+{$random_days} days");
+        } catch (\Exception $e) {
+            // Invalid date format in trigger field
+            $this->log('Invalid date format in trigger field', ['record' => $record, 'trigger_value' => $trigger_value]);
+            return;
+        }
 
-        // Save the follow-up date
-        $data = [
-            $record => [
-                $event_id => [
-                    $followup_field => $followup_date->format('Y-m-d')
-                ]
+        // Prepare data for saving
+        $event_name = \REDCap::getEventNames(true, false, $event_id);
+        
+        $save_data = [
+            [
+                'record_id' => $record,
+                'redcap_event_name' => $event_name,
+                $followup_field => $followup_date->format('Y-m-d')
             ]
         ];
 
-        $this->saveData($project_id, $data);
+        // Save using REDCap::saveData directly
+        $response = \REDCap::saveData(
+            $project_id,
+            'array',
+            $save_data,
+            'overwrite',
+            'YMD',
+            'flat',
+            null,
+            true, // Auto-numbering
+            true, // Skip calc fields - prevents infinite loop
+            true, // Log event
+            false, // Perform required field check
+            false, // Change reason
+            false // Suppress add/edit event
+        );
+
+        // Log any errors
+        if (!empty($response['errors'])) {
+            $this->log('Error saving follow-up date', $response);
+        }
     }
 
     /**
@@ -88,7 +116,7 @@ class RandomFollowup extends AbstractExternalModule
      * @param string $record The record ID
      * @param string $field The field name
      * @param int $event_id The event ID
-     * @param int $instance The repeat instance
+     * @param int $instance The repeat instance (currently not used)
      * @return string The field value
      */
     private function getFieldValue($record, $field, $event_id, $instance = 1)
@@ -110,45 +138,5 @@ class RandomFollowup extends AbstractExternalModule
         }
 
         return null;
-    }
-
-    /**
-     * Helper method to save data
-     * 
-     * @param int $project_id The project ID
-     * @param array $data The data to save
-     */
-    private function saveData($project_id, $data)
-    {
-        // Convert data to REDCap format
-        $save_data = [];
-        
-        foreach ($data as $record => $events) {
-            foreach ($events as $event_id => $fields) {
-                $row = [
-                    'record_id' => $record,
-                    'redcap_event_name' => $this->getUniqueEventName($event_id)
-                ];
-                
-                foreach ($fields as $field => $value) {
-                    $row[$field] = $value;
-                }
-                
-                $save_data[] = $row;
-            }
-        }
-
-        // Save using REDCap::saveData
-        $response = \REDCap::saveData(
-            $project_id,
-            'array',
-            $save_data,
-            'overwrite'
-        );
-
-        // Log any errors
-        if (!empty($response['errors'])) {
-            $this->log('Error saving follow-up date', $response);
-        }
     }
 }
