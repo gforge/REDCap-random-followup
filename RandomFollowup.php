@@ -38,25 +38,18 @@ class RandomFollowup extends AbstractExternalModule
 
         // Get configuration
         $followup_field = $this->getProjectSetting('followup_field');
-        $trigger_field = $this->getProjectSetting('trigger_field');
+        $start_date_field = $this->getProjectSetting('start_date_field');
+        $event_date_field = $this->getProjectSetting('event_date_field');
         $min_days = $this->getProjectSetting('min_days');
         $max_days = $this->getProjectSetting('max_days');
 
-        // Validate configuration
-        if (empty($followup_field) || empty($trigger_field) || !is_numeric($min_days) || !is_numeric($max_days)) {
+        // Validate configuration - start_date_field is required
+        if (empty($followup_field) || empty($start_date_field) || !is_numeric($min_days) || !is_numeric($max_days)) {
             return;
         }
 
         // Ensure min_days <= max_days
         if ($min_days > $max_days) {
-            return;
-        }
-
-        // Get the trigger field value
-        $trigger_value = $this->getFieldValue($record, $trigger_field, $event_id, $repeat_instance);
-
-        // If trigger field is not set, return
-        if (empty($trigger_value)) {
             return;
         }
 
@@ -68,25 +61,43 @@ class RandomFollowup extends AbstractExternalModule
             return;
         }
 
-        // Generate random follow-up date
-        try {
-            $random_days = rand((int)$min_days, (int)$max_days);
-            $trigger_date = new \DateTime($trigger_value);
-            $followup_date = $trigger_date->modify("+{$random_days} days");
-        } catch (\Exception $e) {
-            // Invalid date format in trigger field
-            $this->log('Invalid date format in trigger field', ['record' => $record, 'trigger_value' => $trigger_value]);
+        // Determine which date to use as the base date
+        $base_date_value = null;
+        
+        // First, try to use event_date_field if configured
+        if (!empty($event_date_field)) {
+            $base_date_value = $this->getFieldValue($record, $event_date_field, $event_id, $repeat_instance);
+        }
+        
+        // If event_date_field is not set or empty, fall back to start_date_field
+        if (empty($base_date_value)) {
+            $base_date_value = $this->getFieldValue($record, $start_date_field, $event_id, $repeat_instance);
+        }
+        
+        // If no base date is available, return
+        if (empty($base_date_value)) {
             return;
         }
 
-        // Prepare data for saving
-        $event_name = \REDCap::getEventNames(true, false, $event_id);
+        // Generate random follow-up date
+        try {
+            $random_days = rand((int)$min_days, (int)$max_days);
+            $base_date = new \DateTime($base_date_value);
+            $followup_date = $base_date->modify("+{$random_days} days");
+        } catch (\Exception $e) {
+            // Invalid date format in base date field
+            $this->log('Invalid date format in base date field', ['record' => $record, 'base_date_value' => $base_date_value]);
+            return;
+        }
+
+        // Prepare data for saving using record => event structure
+        $write = [
+            $followup_field => $followup_date->format('Y-m-d')
+        ];
         
         $save_data = [
-            [
-                'record_id' => $record,
-                'redcap_event_name' => $event_name,
-                $followup_field => $followup_date->format('Y-m-d')
+            $record => [
+                $event_id => $write
             ]
         ];
 
@@ -95,16 +106,7 @@ class RandomFollowup extends AbstractExternalModule
             $project_id,
             'array',
             $save_data,
-            'overwrite',
-            'YMD',
-            'flat',
-            null,
-            true, // Auto-numbering
-            true, // Skip calc fields - prevents infinite loop
-            true, // Log event
-            false, // Perform required field check
-            false, // Change reason
-            false // Suppress add/edit event
+            'overwrite'
         );
 
         // Log any errors

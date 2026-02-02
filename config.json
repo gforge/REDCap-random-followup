@@ -27,11 +27,18 @@
       "description": "Select the field that will store the random follow-up date"
     },
     {
-      "key": "trigger_field",
-      "name": "Trigger Field",
+      "key": "start_date_field",
+      "name": "Start Date Field",
       "type": "field-list",
       "required": false,
-      "description": "Select the field that triggers the follow-up date calculation (e.g., enrollment date)"
+      "description": "Select the field that contains the start date for calculation (e.g., enrollment date)"
+    },
+    {
+      "key": "event_date_field",
+      "name": "Event Date Field (Optional)",
+      "type": "field-list",
+      "required": false,
+      "description": "Optional field for event date (e.g., fracture date). If provided and not empty, this will be used instead of the start date field"
     },
     {
       "key": "min_days",
