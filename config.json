@@ -1,0 +1,51 @@
+{
+  "name": "Random Follow-up",
+  "namespace": "Gforge\\RandomFollowup",
+  "description": "Creates a random follow-up date within a set interval",
+  "framework-version": 12,
+  "authors": [
+    {
+      "name": "Max Gordon",
+      "email": "max@gforge.se"
+    }
+  ],
+  "permissions": [
+    "redcap_save_record"
+  ],
+  "project-settings": [
+    {
+      "key": "enable_module",
+      "name": "Enable Random Follow-up",
+      "type": "checkbox",
+      "description": "Enable random follow-up date generation for this project"
+    },
+    {
+      "key": "followup_field",
+      "name": "Follow-up Date Field",
+      "type": "field-list",
+      "required": false,
+      "description": "Select the field that will store the random follow-up date"
+    },
+    {
+      "key": "trigger_field",
+      "name": "Trigger Field",
+      "type": "field-list",
+      "required": false,
+      "description": "Select the field that triggers the follow-up date calculation (e.g., enrollment date)"
+    },
+    {
+      "key": "min_days",
+      "name": "Minimum Days",
+      "type": "text",
+      "required": false,
+      "description": "Minimum number of days after trigger date"
+    },
+    {
+      "key": "max_days",
+      "name": "Maximum Days",
+      "type": "text",
+      "required": false,
+      "description": "Maximum number of days after trigger date"
+    }
+  ]
+}
