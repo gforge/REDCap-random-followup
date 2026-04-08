@@ -1,1 +1,0 @@
-{"version":2,"defects":[],"times":{"SchedulerTest::test_parse_valid_date":0,"SchedulerTest::test_parse_invalid_date":0,"SchedulerTest::test_feasibility_rule":0,"SchedulerTest::test_schedule_respects_gap":0}}
