@@ -17,6 +17,9 @@ composer.lock
 *.tmp
 *.swp
 *~
+# Build / release artifacts
+dist/
+*.zip
 
 # Log files
 *.log
@@ -24,3 +27,5 @@ composer.lock
 # REDCap specific
 config.php
 database.php
+
+.phpunit.cache/

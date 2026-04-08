@@ -159,6 +159,16 @@ Run:
 composer test
 ```
 
+## Build
+
+Create the release package with:
+
+```bash
+make build
+```
+
+This runs tests, prepares the release folder, and creates a ZIP file under `dist/`.
+
 ## Limitations
 
 - Repeating instruments and repeating events are not supported
@@ -176,4 +186,4 @@ MIT License – see [LICENSE](LICENSE)
 ## Author
 
 **Max Gordon**
-max@gforge.se
+max.gordon@ki.se

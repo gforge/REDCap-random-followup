@@ -2,7 +2,7 @@ MODULE_NAME := redcap-random-followup
 VERSION := $(shell jq -r '.version // "dev"' config.json 2>/dev/null || echo dev)
 RELEASE_DIR := dist/$(MODULE_NAME)_$(VERSION)
 
-.PHONY: release clean test zip
+.PHONY: release clean test zip build
 
 ## Run unit tests
 test:
@@ -33,4 +33,8 @@ clean:
 
 zip: release
 	@cd dist && zip -r $(MODULE_NAME)_$(VERSION).zip $(MODULE_NAME)_$(VERSION)
+	@rm -rf $(RELEASE_DIR)
 	@echo "Created dist/$(MODULE_NAME)_$(VERSION).zip"
+
+build: zip
+	@echo "Build complete. Package available at dist/$(MODULE_NAME)_$(VERSION).zip"
