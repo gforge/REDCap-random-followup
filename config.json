@@ -1,5 +1,5 @@
 {
-  "version": "0.9",
+  "version": "0.9.1",
   "name": "Random Follow-up",
   "namespace": "Gforge\\RandomFollowup",
   "description": "Creates one or more random follow-up dates within a set interval, enforcing a minimum gap between them.",
