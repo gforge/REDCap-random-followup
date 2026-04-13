@@ -208,7 +208,7 @@ final class RandomFollowup extends AbstractExternalModule
         foreach ($slots as $slot) {
             if (!is_array($slot)) continue;
 
-            $enabled = $slot['enabled'] ?? null;
+            $enabled = $slot['slot_enabled'] ?? null;
             if ($enabled !== null && !$enabled) {
                 continue;
             }
